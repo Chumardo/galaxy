@@ -20,18 +20,18 @@ class MainWidget(Widget):
 
 
     V_NB_LINES = 8
-    V_LINES_SPACING = .2
+    V_LINES_SPACING = .4
     vertical_lines = []
 
     H_NB_LINES = 8
     H_LINES_SPACING = .1
     horizontal_lines = []
 
-    SPEED = 4
+    SPEED = .8
     current_offset_y = 0
     current_y_loop = 0
 
-    SPEED_X = 12
+    SPEED_X = 20
     current_speed_x = 0
     current_offset_x = 0
 
@@ -212,7 +212,9 @@ class MainWidget(Widget):
         self.update_horizontal_lines()
         self.update_tiles()
         self.update_ship()
-        self.current_offset_y += self.SPEED * time_factor
+
+        speed_y = self.SPEED * self.height / 100
+        self.current_offset_y += speed_y * time_factor
         self.generate_tiles_coordinates()
 
         spacing_y = self.H_LINES_SPACING * self.height
@@ -220,6 +222,8 @@ class MainWidget(Widget):
             self.current_offset_y -= spacing_y
             self.current_y_loop += 1
         
+
+        speed_x = self.current_speed_x * self.width / 100
         self.current_offset_x += self.current_speed_x * time_factor
 
 
