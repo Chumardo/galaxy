@@ -9,6 +9,8 @@ from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Quad
 from kivy.core.window import Window
 from kivy import platform
+import random
+
 
 class MainWidget(Widget):
     from transforms import transform, transform_2D, transform_perspective
@@ -33,7 +35,7 @@ class MainWidget(Widget):
     current_speed_x = 0
     current_offset_x = 0
 
-    NB_TILES = 4
+    NB_TILES = 16
     tiles = []
     tiles_coordinates = []
 
@@ -66,7 +68,7 @@ class MainWidget(Widget):
                 self.tiles.append(Quad())
 
     def generate_tiles_coordinates(self):
-
+        last_x = 0
         last_y = 0
         for i in range(len(self.tiles_coordinates)-1, -1, -1):
             if self.tiles_coordinates[i][1] < self.current_y_loop:
@@ -74,11 +76,24 @@ class MainWidget(Widget):
                 
         if len(self.tiles_coordinates) > 0:
             last_coordinates = self.tiles_coordinates[-1]
+            last_x = last_coordinates[1]
             last_y = last_coordinates[1] + 1
 
 
         for i in range(len(self.tiles_coordinates), self.NB_TILES):
-            self.tiles_coordinates.append((0, last_y))
+            r = random.randint(0, 2)
+            self.tiles_coordinates.append((last_x, last_y))
+            if r == 1:
+                last_x += 1
+                self.tiles_coordinates.append((last_x, last_y))
+                last_y += 1
+                self.tiles_coordinates.append((last_x, last_y))
+            if r == 2:
+                last_x -= 1
+                self.tiles_coordinates.append((last_x, last_y))
+                last_y += 1
+                self.tiles_coordinates.append((last_x, last_y))
+
             last_y += 1
 
 
