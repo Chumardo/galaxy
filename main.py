@@ -5,7 +5,7 @@ Config.set('graphics', 'height', '400')
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import NumericProperty, Clock
+from kivy.properties import NumericProperty, Clock, ObjectProperty
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Quad, Triangle
 from kivy.core.window import Window
@@ -18,6 +18,7 @@ Builder.load_file("menu.kv")
 class MainWidget(RelativeLayout):
     from transforms import transform, transform_2D, transform_perspective
     from user_actions import keyboard_closed, on_keyboard_down, on_keyboard_up, on_touch_down, on_touch_up
+    menu_widget = ObjectProperty()
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
 
@@ -50,6 +51,7 @@ class MainWidget(RelativeLayout):
     ship_coordinates = [(0, 0), (0, 0), (0, 0)]
 
     state_game_over = False
+    state_game_has_started = False
 
 
 
@@ -241,8 +243,8 @@ class MainWidget(RelativeLayout):
         self.update_horizontal_lines()
         self.update_tiles()
         self.update_ship()
-
-        if not self.state_game_over:
+        self.generate_tiles_coordinates()
+        if not self.state_game_over and self.state_game_has_started:
             speed_y = self.SPEED * self.height / 100
             self.current_offset_y += speed_y * time_factor
 
@@ -257,8 +259,13 @@ class MainWidget(RelativeLayout):
 
         if not self.check_ship_collision() and not self.state_game_over:
             self.state_game_over = True
+            self.menu_widget.opacity = 1
             print("GAME OVER")
 
+    def on_menu_button_pressed(self):
+        print("BUTTON")
+        self.state_game_has_started = True
+        self.menu_widget.opacity = 0
 
 class GalaxyApp(App):
     pass
